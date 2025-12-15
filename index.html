@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Product Page IA Study | Portfolio</title>
+    <style>
+        /* --- 基礎設定 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35; /* 核心橙色 */
+            --primary-dark: #E85A2A;
+            --secondary: #2D3142; /* 深藍色 (主文字) */
+            --accent: #4F5D75; /* 灰色 (輔助文字) */
+            --light: #F8F9FA; /* 淺灰背景 */
+            --white: #FFFFFF;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --solution: #4CAF50; /* 解決方案綠色 */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            line-height: 1.6;
+            color: var(--secondary);
+            background: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* --- 1. Hero 區塊 (標題) --- */
+        .hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        /* 優化建議 2: Hero Visual 新樣式 */
+        .hero-visual {
+            width: 100%;
+            max-width: 600px;
+            height: 180px; /* 增加高度 */
+            margin: 2rem auto 0;
+            /* 增加漸層背景和邊框效果 */
+            background: linear-gradient(135deg, rgba(255,107,53,0.15) 0%, rgba(255,107,53,0.05) 100%);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column; /* 允許 before 內容換行 */
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 600;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px); /* 磨砂玻璃效果 */
+        }
+        
+        .hero-visual::before {
+            content: '🎯'; /* 加入圖標 */
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 0.3rem;
+        }
+
+        /* --- 2. 內容區塊基礎樣式 --- */
+        .section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            fill: var(--primary);
+        }
+        
+        /* Project Context 痛點 */
+        .pain-point {
+            background: #FFF5F2;
+            border-left: 4px solid var(--primary-dark);
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        /* --- 3. 決策流視覺化 (階梯/漏斗) --- */
+        .decision-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 2rem;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        /* 垂直連接線 */
+        .decision-flow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 45px; 
+            bottom: 0;
+            width: 2px;
+            background: #D0D0D0; /* 較淺的灰色線 */
+            z-index: 0;
+        }
+
+        .decision-layer {
+            background: var(--white);
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem; /* 增加間距給箭頭 */
+            position: relative;
+            z-index: 1; 
+        }
+
+        /* 決策層級箭頭 */
+        .decision-layer:not(:last-child)::after {
+            content: '↓';
+            position: absolute;
+            left: 38px;
+            bottom: -20px;
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            z-index: 2;
+        }
+
+        .layer-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-left: 30px;
+        }
+
+        .layer-number {
+            background: var(--primary);
+            color: var(--white);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            /* 移到左邊垂直線上 */
+            position: absolute;
+            left: 26px;
+            top: 15px; 
+            box-shadow: 0 0 0 8px var(--white); /* 白色光暈 */
+        }
+        
+        .layer-content {
+            padding-left: 40px; /* 內容對齊 */
+        }
+
+        /* --- 4. 平台觀察 (整合截圖與洞察) --- */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .platform-card {
+            background: var(--white);
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            
+            /* 優化建議 3: Hover 動畫基礎 */
+            position: relative;
+        }
+
+        .platform-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+        
+        /* 優化建議 3: Shimmer 動畫效果 */
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .platform-card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-50%, -50%); }
+            100% { transform: translate(50%, 50%); }
+        }
+
+        /* 優化建議 1: 圖片佔位符新樣式 */
+        .img-placeholder {
+            width: 100%;
+            height: 120px;
+            /* 顏色改成更搭配主題的漸層 */
+            background: linear-gradient(135deg, #FFE5DC 0%, #FFF5F2 100%); 
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            /* 虛線邊框 */
+            border: 2px dashed #FFB199;
+            position: relative;
+            overflow: hidden;
+            line-height: 1.4;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .img-placeholder::before {
+            content: '📊'; /* 加入圖標 */
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .platform-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-desc {
+            color: var(--accent);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .platform-insight {
+            background: #FFEEEB; 
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        /* --- 5. 優化方向 (解決方案樣式) --- */
+        .optimization-list {
+            list-style: none;
+            margin-top: 1.5rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .optimization-list li {
+            padding: 1.2rem;
+            margin: 0;
+            background: #E8F5E9; /* 淺綠色 */
+            border-left: 4px solid var(--solution); /* 綠色邊條 */
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .optimization-list li:hover {
+            background: #DCEFE0;
+        }
+        
+        /* Takeaways 總結 */
+        .takeaway-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .takeaway-list li {
+            padding: 1rem 1rem 1rem 3rem;
+            margin: 0.8rem 0;
+            background: var(--light);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .takeaway-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 1rem;
+            color: var(--solution);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .final-reflection {
+            margin-top: 2rem; 
+            padding: 1.5rem; 
+            background: var(--light); 
+            border-radius: 8px; 
+            line-height: 1.8;
+            border: 1px solid #DDD;
+        }
+
+        /* 優化建議 4: Scroll to Top Button CSS */
+        #scrollTop {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #scrollTop:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .section {
+                padding: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>E-commerce Product Page IA Study</h1>
+            <p class="subtitle">商品頁資訊架構與使用者決策流程拆解</p>
+            <div class="hero-visual">
+                專案核心：從使用者行為反推 IA 策略 (Decision Flow)
+            </div>
+            <div>
+                <span class="tag">Product Management</span>
+                <span class="tag">UX Research</span>
+                <span class="tag">Information Architecture</span>
+                <span class="tag">Conversion Rate Optimization</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.53 0-6.43-2.61-6.92-6h2.95c.46 2.28 2.48 4 4.97 4s4.51-1.72 4.97-4h2.95c-.49 3.39-3.39 6-6.92 6z"/></svg>
+                Project Context
+            </h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; color: var(--accent);">
+                在不同電商平台的商品頁中,我反覆觀察到一件事:<br>
+                <span class="highlight">使用者的流失,往往不是因為商品不好,而是卡在某幾個關鍵決策節點。</span>
+            </p>
+            <div style="margin-top: 2rem;">
+                <div class="pain-point">
+                    <strong>❌ 評價資訊不夠前置</strong> → 無法快速建立信任
+                </div>
+                <div class="pain-point">
+                    <strong>❌ 運費與到貨時間曝光過晚</strong> → 造成結帳前的心理落差
+                </div>
+                <div class="pain-point">
+                    <strong>❌ SKU 選擇方式不直覺</strong> → 讓使用者在最後一步猶豫或放棄
+                </div>
+            </div>
+            <p style="margin-top: 2rem; font-size: 1.05rem; line-height: 1.8;">
+                這個 side project 的目的,是從 <span class="highlight">使用者決策角度</span> 出發,
+                拆解四個主流電商平台的商品頁資訊架構,理解「商品頁實際上是如何引導使用者完成一連串決策的」。
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2V7h-4v2h2z"/></svg>
+                Scope & Approach
+            </h2>
+            <div style="background: var(--light); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                <p><strong>📊 分析範圍:</strong> 商品頁 (Product Detail Page)</p>
+                <p><strong>🏢 平台:</strong> Shopee、Momo、Amazon、PChome (桌面版)</p>
+                <p style="margin-top: 1rem;"><strong>🎯 分析重點:</strong> (不討論視覺設計好壞，聚焦於決策支援)</p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>資訊順序 (Information Priority)</li>
+                    <li>模組位置 (Module Placement)</li>
+                    <li>決策支持程度 (Decision Support)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                How Users Actually Decide (Decision Flow)
+            </h2>
+            <p style="margin-bottom: 1.5rem; font-size: 1.05rem;">
+                與其說使用者在「逛頁面」,不如說他們在 <span class="highlight">快速回答一連串問題</span>。
+            </p>
+            
+            <div class="decision-flow">
+                <div class="decision-layer">
+                    <div class="layer-title">
+                        <span class="layer-number">0</span>
+                        是否值得繼續看 (<span class="highlight">3秒內</span>)
+                    </div>
+                    <div class="layer-content">
+                        <p>使用者會快速掃過:<strong> 主圖、價格、星等與評論數</strong></p>
+                        <p style="margin-top: 0.5rem; color: var(--accent); font-size: 0.95rem;">
+                            這一層的功能不是說服,而是篩選。只要其中一項不符合預期,使用者很可能直接離開頁面。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="decision-layer">
+                    <div class="layer-title">
+                        <span class="layer-number">1</span>
+                        信任是否成立
+                    </div>
+                    <div class="layer-content">
+                        <p>一旦使用者願意停下來,下一步就是確認風險</p>
+                        <ul style="margin-top: 0.5rem; color: var(--accent); margin-left: 1.5rem; font-size: 0.95rem;">
+                            <li>其他人買了之後的真實感受</li>
+                            <li>是否有足夠評論數量</li>
+                            <li>是否能快速掌握好壞評的分布</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="decision-layer">
+                    <div class="layer-title">
+                        <span class="layer-number">2</span>
+                        實際成本是否可接受
+                    </div>
+                    <div class="layer-content">
+                        <p>運費與到貨時間往往是影響轉換的最後一道現實門檻</p>
+                        <p style="margin-top: 0.5rem; color: var(--accent); font-size: 0.95rem;">
+                            如果這些資訊曝光過晚,即使前面已建立購買意願,也容易在此產生 <span class="highlight">drop-off</span>。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="decision-layer">
+                    <div class="layer-title">
+                        <span class="layer-number">3</span>
+                        我能不能買到「對的版本」
+                    </div>
+                    <div class="layer-content">
+                        <p>SKU 其實是商品頁中最容易被低估的轉換節點</p>
+                        <p style="margin-top: 0.5rem; color: var(--accent); font-size: 0.95rem;">
+                            視覺化的 SKU (圖片按鈕) 能顯著降低誤選與猶豫。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="decision-layer">
+                    <div class="layer-title">
+                        <span class="layer-number">4</span>
+                        細節確認 (高意圖階段)
+                    </div>
+                    <div class="layer-content">
+                        <p>這一層通常只會被高購買意圖使用者完整閱讀</p>
+                        <p style="margin-top: 0.5rem; color: var(--accent); font-size: 0.95rem;">
+                            包含:商品描述、規格表、Q&A、深度評論。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+                Cross-platform Observations
+            </h2>
+            <p style="margin-bottom: 1.5rem;">以下是四個平台商品頁的實際觀察與洞察:</p>
+            
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <div>
+                        <div class="platform-name">🛒 Shopee</div>
+                        <div class="img-placeholder" data-screenshot="shopee-hero">
+                            <span>📸</span>
+                            <span>Shopee 第一屏 (價格/評價/SKU)</span>
+                        </div>
+                        <div class="platform-desc">
+                            • 第一屏資訊完整,價格、評價、銷量同時可見<br>
+                            • SKU 採用圖片形式,降低選錯風險<br>
+                            • 運費資訊完整,但需點開彈窗
+                        </div>
+                    </div>
+                    <div class="platform-insight">
+                        挑戰在於資訊密度高時的優先順序引導，需優化 Level 0/1 的曝光策略。
+                    </div>
+                </div>
+
+                <div class="platform-card">
+                    <div>
+                        <div class="platform-name">📦 Amazon</div>
+                        <div class="img-placeholder" data-screenshot="amazon-review-structure">
+                            <span>📸</span>
+                            <span>Amazon 評價結構</span>
+                        </div>
+                        <div class="platform-desc">
+                            • 商品頁高度模組化<br>
+                            • Review summary 結構清楚<br>
+                            • 運送與退貨政策在早期即曝光
+                        </div>
+                    </div>
+                    <div class="platform-insight">
+                        高度模組化、結構化的評價模組是其核心決策支援工具。
+                    </div>
+                </div>
+
+                <div class="platform-card">
+                    <div>
+                        <div class="platform-name">🏪 PChome</div>
+                        <div class="img-placeholder" data-screenshot="pchome-ia-layout">
+                            <span>📸</span>
+                            <span>PChome IA 佈局</span>
+                        </div>
+                        <div class="platform-desc">
+                            • 第一屏資訊偏多但較平鋪<br>
+                            • 評價需要切換 tab 或滑動較久<br>
+                            • 結構較傳統
+                        </div>
+                    </div>
+                    <div class="platform-insight">
+                        IA 結構較為傳統，新使用者需要較多認知成本來尋找 Level 1/2 資訊。
+                    </div>
+                </div>
+
+                <div class="platform-card">
+                    <div>
+                        <div class="platform-name">🎯 Momo</div>
+                        <div class="img-placeholder" data-screenshot="momo-activity-priority">
+                            <span>📸</span>
+                            <span>Momo 價格與活動優先級</span>
+                        </div>
+                        <div class="platform-desc">
+                            • 第一屏資訊密度極高但層級清楚<br>
+                            • 價格與活動訊息非常突出<br>
+                            • 規格與付款資訊提前曝光
+                        </div>
+                    </div>
+                    <div class="platform-insight">
+                        偏向理性導向的商品頁結構，強調價格與即時活動對轉換的推動力。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                Key Pain Points Identified
+            </h2>
+            <p style="margin-bottom: 1rem;">這些痛點並非單一 UI 問題,而是 <span class="highlight">IA 與決策流程未完全對齊</span> 的結果:</p>
+            
+            <div class="pain-point">
+                <strong>1. IA 錯位：</strong> 關鍵決策資訊未依使用者流程排序
+            </div>
+            <div class="pain-point">
+                <strong>2. 信任成本高：</strong> 評價資訊未前置,增加信任建立成本
+            </div>
+            <div class="pain-point">
+                <strong>3. 現實落差：</strong> 運費與到貨時間曝光時機偏晚
+            </div>
+            <div class="pain-point">
+                <strong>4. SKU 摩擦：</strong> 呈現方式不一致,易造成猶豫或誤選
+            </div>
+            <div class="pain-point">
+                <strong>5. 購買中斷：</strong> CTA 在長頁中缺乏持續可見性
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/></svg>
+                IA-driven Optimization Direction (Concept)
+            </h2>
+            <p style="margin-bottom: 1rem;">如果以「支援使用者決策」為核心重排商品頁 IA,我會優先:</p>
+            
+            <ul class="optimization-list">
+                <li>**Level 0/1 前置：** 在第一屏即提供:價格、評價摘要、簡要運費提示</li>
+                <li>**消除摩擦：** 將 SKU 選擇視覺化並提前曝光 (貼近 Level 3 決策點)</li>
+                <li>**持續引導：** 將 CTA 設計為長頁可持續操作 (Sticky CTA)</li>
+                <li>**結構化信任：** 將完整評價模組結構化,而非僅作為內容列表 (如 Amazon 摘要)</li>
+            </ul>
+            
+            <p style="margin-top: 1.5rem; color: var(--accent);">
+                這些調整的目標不是增加資訊量,而是 <span class="highlight">降低使用者在每一層決策的認知成本</span>。
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Key Takeaways
+            </h2>
+            
+            <ul class="takeaway-list">
+                <li>商品頁本質上是一連串被設計過的決策節點</li>
+                <li>IA 的好壞,會直接影響轉換率與掉單位置</li>
+                <li>使用者體驗的關鍵,往往不在畫面,而在資訊順序</li>
+            </ul>
+            
+            <p class="final-reflection">
+                這種從 <span class="highlight">行為反推結構、再回推產品決策</span> 的方式,
+                是我在看電商產品時,會持續使用的分析視角。我很享受將日常的觀察轉化為專業結構的過程。
+            </p>
+        </section>
+    </div>
+
+    <button id="scrollTop" style="display: none;">↑</button>
+
+    <script>
+        // 優化建議 4: Scroll to Top JavaScript 邏輯
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.getElementById('scrollTop');
+            // 當捲動超過 300px 時顯示按鈕
+            if (window.pageYOffset > 300) {
+                scrollTop.style.display = 'block';
+            } else {
+                scrollTop.style.display = 'none';
+            }
+        });
+
+        document.getElementById('scrollTop').addEventListener('click', function() {
+            // 平滑捲動到頁面頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
